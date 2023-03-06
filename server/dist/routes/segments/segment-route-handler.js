@@ -17,14 +17,11 @@ function segmentList(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const segmentCollection = yield (yield (0, mongo_wrapper_1.getDbWrapper)()).getCollection("segments");
-            // todo TASK 1
-            // write this function to return { data: ISegmentMetaData[]; totalCount: number };
-            // where data is an array of ISegmentMetaData, and totalCount is the # of total segments
-            // the "users" collection
-            // const userCollection: Collection = await (await getDbWrapper()).getCollection('users');
-            // has a "many to many" relationship to the segment collection, check IUser interface or query the raw data.
-            // res.json({ success: true, data: ISegmentMetaData[], totalCount });
-            res.json({ success: true });
+            var segmentList = yield segmentCollection.find({}).toArray();
+            var response = segmentList.map((item) => {
+                return item;
+            });
+            res.json({ totalCount: segmentList.length, response: response });
         }
         catch (error) {
             (0, route_error_handler_1.handleResponseError)(`Get Segment List Error: ${error.message}`, error.message, res);
@@ -69,10 +66,11 @@ function getSegmentGenderData(req, res) {
             // write this function to return
             // data = [ { _id: "Male", userCount: x1, userPercentage: y1 }, { _id: "Female", userCount: x2, userPercentage: y2} ]
             // the "users" collection
-            // const userCollection: Collection = await (await getDbWrapper()).getCollection('users');
-            // has a "many to many" relationship to the segment collection, check IUser interface or query the raw data.
-            // res.json({ success: true, data: ISegmentGenderData[] });
-            res.json({ success: true });
+            const userCollection = yield (yield (0, mongo_wrapper_1.getDbWrapper)()).getCollection('users');
+            // console.log('rrrr', req.params.id); NOT WORKING :(
+            var usersList = yield userCollection.find({ 'segment_ids': '62e5778b34362ad54db6b3f7' }).toArray();
+            //didnt have enough time to finish this task :(
+            res.json({ success: true, response: usersList });
         }
         catch (error) {
             (0, route_error_handler_1.handleResponseError)(`Segment gender data error: ${error.message}`, error.message, res);

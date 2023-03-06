@@ -17,6 +17,7 @@ console.info = (...args) => logger_1.logger.info.apply(logger_1.logger, args);
 console.warn = (...args) => logger_1.logger.warn.apply(logger_1.logger, args);
 (0, mongo_wrapper_1.connectMongoConnector)().then(() => {
     app.use("/api/v1", middleware_base_1.default.configuration);
+    console.log('oleg');
     app
         .listen(port, () => console.log(`server is listening on ${port}`))
         .on("error", (err) => console.error((err === null || err === void 0 ? void 0 : err.message) || err));

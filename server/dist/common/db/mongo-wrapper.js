@@ -117,7 +117,11 @@ class MongoConnector {
             if (!collectionName) {
                 throw new Error("collection name is missing");
             }
-            return (yield this._mongoConnector).db().collection(collectionName);
+            const collection = (yield this._mongoConnector).db().collection(collectionName);
+            // var res = await collection.find({}).toArray();
+            // var resArr: ISegmentMetaData[];
+            // await res.forEach(doc => resArr.push(doc as ISegmentMetaData));
+            return collection;
         });
     }
     /**

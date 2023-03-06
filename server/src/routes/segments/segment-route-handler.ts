@@ -6,6 +6,9 @@ import {
   ISegmentGenderData,
   ISegmentMetaData,
 } from "../../common/types/db-models/segment";
+import {
+  Gender,
+} from "../../common/types/db-models/user"
 import { getDbWrapper } from "../../common/db/mongo-wrapper";
 
 export async function segmentList(req: Request, res: Response): Promise<void> {
@@ -77,23 +80,23 @@ export async function getSegmentGenderData(
   res: Response
 ): Promise<void> {
   try {
-    const segmentCollection: Collection = await (
-      await getDbWrapper()
-    ).getCollection("segments");
+    var segmentId = new ObjectId(req.params.id);
 
-    // todo TASK 2
-    // write this function to return
-    // data = [ { _id: "Male", userCount: x1, userPercentage: y1 }, { _id: "Female", userCount: x2, userPercentage: y2} ]
+    const dbWrapper = await getDbWrapper();
+    let [segmentCollection, userCollection] = await Promise.all([dbWrapper.getCollection("segments"), dbWrapper.getCollection('users')])
 
-    // the "users" collection
-    const userCollection: Collection = await (await getDbWrapper()).getCollection('users');
+    let [femalesCount, malesCount] = await Promise.all([userCollection.find({
+      segment_ids: { "$in": [segmentId] },
+      gender: 'Female'
+    }).count(), userCollection.find({
+      segment_ids: { "$in": [segmentId] },
+      gender: 'Male'
+    }).count()]);
 
-    // console.log('rrrr', req.params.id); NOT WORKING :(
+    var response = [{ _id: Gender.Male, userCount: malesCount, userPercentage: malesCount / (malesCount + femalesCount) * 100 },
+    { _id: Gender.Female, userCount: femalesCount, userPercentage: femalesCount / (malesCount + femalesCount) * 100 }];
 
-    var usersList = await userCollection.find({ 'segment_ids': '62e5778b34362ad54db6b3f7' }).toArray();
-
-    //didnt have enough time to finish this task :(
-    res.json({ success: true, response: usersList });
+    res.json({ response: response });
   } catch (error) {
     handleResponseError(
       `Segment gender data error: ${error.message}`,
