@@ -22,7 +22,7 @@ export async function segmentList(req: Request, res: Response): Promise<void> {
       return item as ISegmentMetaData
     });
 
-    res.json({ totalCount: segmentList.length, response: response });
+    res.json({ totalCount: segmentList.length, data: response });
   } catch (error) {
     handleResponseError(
       `Get Segment List Error: ${error.message}`,
@@ -43,6 +43,7 @@ export async function getSegmentById(
     const segment: ISegment = await segmentCollection.findOne({
       _id: new ObjectId(req.params.id as string),
     });
+
     if (!segment) {
       return handleResponseError(
         `Error getSegmentById`,
@@ -50,7 +51,7 @@ export async function getSegmentById(
         res
       );
     }
-    res.json({ success: true, data: segment });
+    res.json({ success: true, data: [segment] });
   } catch (error) {
     handleResponseError(
       `Get Segment by id error: ${error.message}`,
@@ -96,7 +97,7 @@ export async function getSegmentGenderData(
     var response = [{ _id: Gender.Male, userCount: malesCount, userPercentage: malesCount / (malesCount + femalesCount) * 100 },
     { _id: Gender.Female, userCount: femalesCount, userPercentage: femalesCount / (malesCount + femalesCount) * 100 }];
 
-    res.json({ response: response });
+    res.json({ data: response });
   } catch (error) {
     handleResponseError(
       `Segment gender data error: ${error.message}`,
