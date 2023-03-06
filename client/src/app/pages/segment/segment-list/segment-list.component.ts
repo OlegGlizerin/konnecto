@@ -59,7 +59,7 @@ export class SegmentListComponent implements OnInit {
     );
   }
 
-  private handleListResponse(response: {
+private handleListResponse(response: {
     data: ISegmentMetaData[];
     totalCount: number;
   }) {
@@ -72,9 +72,8 @@ export class SegmentListComponent implements OnInit {
     totalCount: number;
   }> {
     let params = new HttpParams()
-
     if (this.searchValue?.length) {
-      params = params.set("q", this.searchValue);
+      params = params.set("id", this.searchValue);
     }
     return this.segmentService.list(params);
   }

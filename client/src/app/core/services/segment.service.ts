@@ -10,17 +10,20 @@ import { ISegment, ISegmentGenderData, ISegmentMetaData } from "../types";
 export class SegmentService {
   private readonly SEGMENTS_API = `${API_V1_PREFIX}/segment`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   list(params?: HttpParams): Observable<{
     data: ISegmentMetaData[];
     totalCount: number;
   }> {
     params = params || new HttpParams();
+
+    const path = params.getAll('id') ? `${this.SEGMENTS_API}/${params.getAll('id')[0]}` : `${this.SEGMENTS_API}/`;
+
     return this.http.get<{
       data: ISegmentMetaData[];
       totalCount: number;
-    }>(`${this.SEGMENTS_API}/`, { params });
+    }>(path, { params });
   }
 
   getById(id: string): Observable<{ data: ISegment }> {
