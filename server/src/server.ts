@@ -14,7 +14,6 @@ console.warn = (...args) => logger.warn.apply(logger, args);
 
 connectMongoConnector().then(() => {
   app.use("/api/v1", MiddlewareBase.configuration);
-  console.log('oleg')
   app
     .listen(port, () => console.log(`server is listening on ${port}`))
     .on("error", (err) => console.error(err?.message || err));
